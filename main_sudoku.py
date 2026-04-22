@@ -10,7 +10,9 @@ def main():
     while True:
         screen.fill((255, 255, 255))
         for event in pygame.event.get():
-            if event.type == pygame.QUIT: pygame.quit(); sys.exit()
+            if event.type == pygame.QUIT: 
+                pygame.quit()
+                sys.exit()
             
             if state == "start":
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -28,7 +30,9 @@ def main():
                     if 550 <= y <= 590:
                         if 50 <= x <= 150: board.reset_to_original()
                         elif 220 <= x <= 320: state = "start"
-                        elif 390 <= x <= 490: pygame.quit(); sys.exit()
+                        elif 390 <= x <= 490: 
+                            pygame.quit()
+                            sys.exit()
                 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_UP and board.selected_row > 0: board.select(board.selected_row-1, board.selected_col)
@@ -41,21 +45,34 @@ def main():
                         board.place_number(board.cells[board.selected_row][board.selected_col].sketched_value)
                         if board.is_full(): state = "win" if board.check_board() else "lose"
 
+            elif state in ["win", "lose"]:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    x, y = event.pos
+                    if 210 <= x <= 330 and 400 <= y <= 450:
+                        pygame.quit()
+                        sys.exit()
+
         if state == "start":
             font = pygame.font.Font(None, 60)
             screen.blit(font.render("Sudoku", True, (0,0,0)), (200, 150))
             for i, diff in enumerate(["EASY", "MEDIUM", "HARD"]):
                 pygame.draw.rect(screen, (255, 165, 0), (50 + i*160, 400, 120, 50))
                 screen.blit(pygame.font.Font(None, 30).render(diff, True, (255,255,255)), (70 + i*160, 415))
+        
         elif state == "game":
             board.draw()
             for i, txt in enumerate(["RESET", "RESTART", "EXIT"]):
                 pygame.draw.rect(screen, (255, 165, 0), (50 + i*170, 550, 100, 40))
                 screen.blit(pygame.font.Font(None, 25).render(txt, True, (255,255,255)), (65 + i*170, 560))
+        
         elif state in ["win", "lose"]:
             txt = "YOU WIN!" if state == "win" else "GAME OVER"
             screen.blit(pygame.font.Font(None, 80).render(txt, True, (0,0,0)), (130, 250))
             
+            pygame.draw.rect(screen, (255, 165, 0), (210, 400, 120, 50))
+            screen.blit(pygame.font.Font(None, 30).render("EXIT", True, (255,255,255)), (245, 415))
+            
         pygame.display.update()
 
-if __name__ == "__main__": main()
+if __name__ == "__main__": 
+    main()
